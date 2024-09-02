@@ -35,55 +35,93 @@ describe('Auth component', () => {
 
   // 👇 START WORKING HERE
   test('[1] Inputs acquire the correct values when typed on', async () => {
-    screen.debug()
     // ✨ type some text in the username input (done for you)
     await user.type(userInput, 'gabe')
     // ✨ assert that the input has the value entered (done for you)
     expect(userInput).toHaveValue('gabe')
     // ✨ type some text in the password input
+    await user.type(passInput, 'password')
     // ✨ assert that the input has the value entered
-    expect(true).toBe(false) // DELETE
+    expect(passInput).toHaveValue('password')
   })
+
+
   test('[2] Submitting form clicking button shows "Please wait..." message', async () => {
     // ✨ type whatever values on username and password inputs
+    await user.type(userInput, 'gabe')
+    await user.type(passInput, 'password')
     // ✨ click the Login button
+    await user.click(loginBtn)
     // ✨ assert that the "Please wait..." message is visible in the DOM
-    expect(true).toBe(false) // DELETE
+    expect(await screen.findByText("Please wait..."))
   })
+
+
   test('[3] Submitting form typing [ENTER] shows "Please wait..." message', async () => {
     // ✨ type whatever values in username and password inputs
+    await user.type(userInput, 'gabe')
+    await user.type(passInput, 'password')
     // ✨ hit the [ENTER] key on the keyboard
+    await user.keyboard('[ENTER]')  
     // ✨ assert that the "Please wait..." message is visible in the DOM
-    expect(true).toBe(false) // DELETE
+    expect(await screen.findByText("Please wait..."))
   })
+
+
   test('[4] Submitting an empty form shows "Invalid Credentials" message', async () => {
     // ✨ submit an empty form
+    await user.click(loginBtn)
+
     // ✨ assert that the "Invalid Credentials" message eventually is visible
-    expect(true).toBe(false) // DELETE
+    expect(await screen.findByText("Invalid Credentials")).toBeVisible()
   })
+
+
+
   test('[5] Submitting incorrect credentials shows "Invalid Credentials" message', async () => {
-    // ✨ type whatever username and password and submit form
+    // ✨ type whatever username and password and submit form    
+    await user.type(userInput, "whatever")
+    await user.type(passInput, "whatever")
+    await user.click(loginBtn)
+
     // ✨ assert that the "Invalid Credentials" message eventually is visible
-    expect(true).toBe(false) // DELETE
+    expect(await screen.findByText("Invalid Credentials")).toBeVisible()
   })
+
+
   for (const usr of registeredUsers) {
     test(`[6.${usr.id}] Logging in ${usr.username} makes the following elements render:
         - correct welcome message
         - correct user info (ID, username, birth date)
         - logout button`, async () => {
+
       // ✨ type valid credentials and submit form
+      await user.type(userInput, usr.username)
+      await user.type(passInput, usr.password)
+      await user.click(loginBtn)
+          
+
       // ✨ assert that the correct welcome message is eventually visible
+      expect(await screen.findByText(`Welcome back, ${usr.username}. We LOVE you!`)).toBeVisible()
+
       // ✨ assert that the correct user info appears is eventually visible
+      expect(await screen.findByText("Madonna"))
+      screen.debug()
+      // expect(await screen.findByText(`${usr.id}`)).toBeVisible()
+      // expect(await screen.findByText(`${usr.username}`))
+      // expect(await screen.findByText(`${usr.born}`))
+
       // ✨ assert that the logout button appears
-      expect(true).toBe(false) // DELETE
+      // const btn = screen.getByTestId('logoutBtn')
+      // expect(await btn.toBeVisible())
     })
   }
-  test('[7] Logging out a logged-in user displays goodbye message and renders form', async () => {
-    // ✨ type valid credentials and submit
-    // ✨ await the welcome message
-    // ✨ click on the logout button (grab it by its test id)
-    // ✨ assert that the goodbye message is eventually visible in the DOM
-    // ✨ assert that the form is visible in the DOM (select it by its test id)
-    expect(true).toBe(false) // DELETE
-  })
+  // test('[7] Logging out a logged-in user displays goodbye message and renders form', async () => {
+  //   // ✨ type valid credentials and submit
+  //   // ✨ await the welcome message
+  //   // ✨ click on the logout button (grab it by its test id)
+  //   // ✨ assert that the goodbye message is eventually visible in the DOM
+  //   // ✨ assert that the form is visible in the DOM (select it by its test id)
+  //   expect(true).toBe(false) // DELETE
+  // })
 })
