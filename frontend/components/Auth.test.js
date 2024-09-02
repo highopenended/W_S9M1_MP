@@ -33,6 +33,8 @@ describe('Auth component', () => {
     { id: 4, username: 'Madonna', born: 1958, password: 'Vogue1958@' },
   ]
 
+
+  
   // 👇 START WORKING HERE
   test('[1] Inputs acquire the correct values when typed on', async () => {
     // ✨ type some text in the username input (done for you)
@@ -46,6 +48,7 @@ describe('Auth component', () => {
   })
 
 
+
   test('[2] Submitting form clicking button shows "Please wait..." message', async () => {
     // ✨ type whatever values on username and password inputs
     await user.type(userInput, 'gabe')
@@ -57,12 +60,13 @@ describe('Auth component', () => {
   })
 
 
+
   test('[3] Submitting form typing [ENTER] shows "Please wait..." message', async () => {
     // ✨ type whatever values in username and password inputs
     await user.type(userInput, 'gabe')
     await user.type(passInput, 'password')
     // ✨ hit the [ENTER] key on the keyboard
-    await user.keyboard('[ENTER]')  
+    await user.keyboard('[ENTER]') 
     // ✨ assert that the "Please wait..." message is visible in the DOM
     expect(await screen.findByText("Please wait..."))
   })
@@ -71,7 +75,6 @@ describe('Auth component', () => {
   test('[4] Submitting an empty form shows "Invalid Credentials" message', async () => {
     // ✨ submit an empty form
     await user.click(loginBtn)
-
     // ✨ assert that the "Invalid Credentials" message eventually is visible
     expect(await screen.findByText("Invalid Credentials")).toBeVisible()
   })
@@ -83,10 +86,10 @@ describe('Auth component', () => {
     await user.type(userInput, "whatever")
     await user.type(passInput, "whatever")
     await user.click(loginBtn)
-
     // ✨ assert that the "Invalid Credentials" message eventually is visible
     expect(await screen.findByText("Invalid Credentials")).toBeVisible()
   })
+
 
 
   for (const usr of registeredUsers) {
@@ -94,34 +97,34 @@ describe('Auth component', () => {
         - correct welcome message
         - correct user info (ID, username, birth date)
         - logout button`, async () => {
-
       // ✨ type valid credentials and submit form
       await user.type(userInput, usr.username)
       await user.type(passInput, usr.password)
       await user.click(loginBtn)
-          
-
       // ✨ assert that the correct welcome message is eventually visible
       expect(await screen.findByText(`Welcome back, ${usr.username}. We LOVE you!`)).toBeVisible()
-
       // ✨ assert that the correct user info appears is eventually visible
-      expect(await screen.findByText("Madonna"))
-      screen.debug()
-      // expect(await screen.findByText(`${usr.id}`)).toBeVisible()
-      // expect(await screen.findByText(`${usr.username}`))
-      // expect(await screen.findByText(`${usr.born}`))
-
+      expect(await screen.findByText(`ID: ${usr.id}, Username: ${usr.username}, Born: ${usr.born}`)).toBeVisible()
       // ✨ assert that the logout button appears
-      // const btn = screen.getByTestId('logoutBtn')
-      // expect(await btn.toBeVisible())
+      expect(await screen.getByTestId('logoutBtn')).toBeVisible()
     })
   }
-  // test('[7] Logging out a logged-in user displays goodbye message and renders form', async () => {
-  //   // ✨ type valid credentials and submit
-  //   // ✨ await the welcome message
-  //   // ✨ click on the logout button (grab it by its test id)
-  //   // ✨ assert that the goodbye message is eventually visible in the DOM
-  //   // ✨ assert that the form is visible in the DOM (select it by its test id)
-  //   expect(true).toBe(false) // DELETE
-  // })
+
+
+  test('[7] Logging out a logged-in user displays goodbye message and renders form', async () => {
+    const usr = registeredUsers[0]
+    // ✨ type valid credentials and submit
+    await user.type(userInput, usr.username)
+    await user.type(passInput, usr.password)
+    await user.click(loginBtn)
+    // ✨ await the welcome message
+    expect(await screen.findByText(`Welcome back, ${usr.username}. We LOVE you!`)).toBeVisible()
+    // ✨ click on the logout button (grab it by its test id)
+    await user.click(await screen.getByTestId('logoutBtn'))
+    // ✨ assert that the goodbye message is eventually visible in the DOM
+    expect(await screen.findByText(`Bye! Please, come back soon.`)).toBeVisible()
+    // ✨ assert that the form is visible in the DOM (select it by its test id)
+    expect(await screen.getByTestId('loginForm')).toBeVisible()
+    screen.debug()
+  })
 })
